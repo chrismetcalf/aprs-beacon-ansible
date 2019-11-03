@@ -1,0 +1,36 @@
+---
+- name: install_gpsd_packages
+  apt:
+    state: present
+    pkg:
+      - gpsd
+      - gpsd-clients
+      - python-gps
+      - libgps-dev
+      - ntp
+
+- name: update_gpsd_default 
+  lineinfile:
+    path: /etc/default/gpsd
+    regexp: '^GPSD_OPTIONS='
+    line: 'GPSD_OPTIONS="-n"'
+
+- name: restart_gpsd
+  service:
+    name: gpsd
+    state: restarted
+
+- name: enable_gps_ntp
+  blockinfile:
+    path: /etc/ntp.conf
+    insertafter: EOF
+    block: |
+      server 127.127.28.0 4
+      fudge 127.127.28.0 time1 0.050 refid GPS
+      server 127.127.28.1 prefer
+      fudge 127.127.28.1 refid GPS1
+
+- name: restart_ntp
+  service:
+    name: ntp
+    state: restarted

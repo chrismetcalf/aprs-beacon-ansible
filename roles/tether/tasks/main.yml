@@ -1,0 +1,29 @@
+---
+- name: install_tether_packages
+  apt:
+    state: present
+    pkg:
+      - gvfs
+      - ipheth-utils
+      - libimobiledevice-utils
+      - gvfs-backends
+      - gvfs-bin
+      - gvfs-fuse
+      - ifuse
+
+- name: setup_eth1
+  copy:
+    src: eth1
+    dest: /etc/network/interfaces.d/eth1
+
+- name: copy_iphoneconnect
+  copy:
+    src: iphoneconnect
+    dest: /lib/udev/iphoneconnect
+    mode: 755
+
+- name: update_tether_rules
+  replace:
+    dest: /lib/udev/rules.d/90-iphone-tether.rules
+    regexp: "ipheth-pair"
+    replace: "iphoneconnect"

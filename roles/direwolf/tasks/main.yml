@@ -1,0 +1,31 @@
+---
+- name: install_direwolf_packages
+  apt:
+    state: present
+    pkg:
+      - git
+      - libasound2-dev
+      - libudev-dev
+
+- name: clone_direwolf
+  git:
+    repo: 'https://www.github.com/wb2osz/direwolf'
+    dest: /usr/src/direwolf
+
+- name: build_direwolf
+  make:
+    chdir: /usr/src/direwolf
+    target: all
+
+- name: install_direwolf
+  make:
+    chdir: /usr/src/direwolf
+    target: install
+
+- name: copy_direwolf_conf
+  copy:
+    src: direwolf.conf
+    dest: /home/pi/.direwolf.conf
+    mode: 0600
+    owner: pi
+    group: pi

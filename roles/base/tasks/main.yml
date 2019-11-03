@@ -1,0 +1,8 @@
+---
+- name: install_common_packages
+  apt:
+    state: present
+    pkg:
+      - vim
+      - zsh
+      - tmux

@@ -1,0 +1,22 @@
+---
+
+- name: Configure a Raspberry Pi as an APRS beacon
+  hosts: pi
+  roles:
+    - role: ansible-raspi-config
+      raspi_config_update_packages: yes
+      raspi_config_hostname: k1not-beacon
+      raspi_config_expanded_filesystem: yes
+      raspi_config_memory_split_gpu: 4
+      raspi_config_timezone: America/Los_Angeles
+      raspi_config_ensure_optimal_cpu_params: no
+      locale: en_US.UTF8
+      raspi_config_replace_user:
+        name: pi
+        path_to_ssh_key: ~/.ssh/id_rsa.pub
+    - role: base
+    - role: tether
+    - role: gpsd
+    - role: direwolf
+  remote_user: pi
+  sudo: yes
